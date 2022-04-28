@@ -74,10 +74,10 @@ int button_state = 0;
 const int BUTTON_INPUT = 8;
 const int HC05_TX = 14;
 const int HC05_RX = 15;
-SoftwareSerial HC05Module(HC05_TX, HC05_RX);
+SoftwareSerial HC05Module(HC05_RX, HC05_TX);
 
 void setup() {
-  Serial.begin(38400);
+  Serial.begin(9600);
   Wire.begin();
   Wire.beginTransmission(MPU_ADDR); // Begins a transmission to the I2C slave (GY-521 board)
   Wire.write(0x6B); // PWR_MGMT_1 register
@@ -89,7 +89,7 @@ void setup() {
 
   // Bluetooth and button
   pinMode(BUTTON_INPUT, INPUT);
-  HC05Module.begin(38400);
+  HC05Module.begin(9600);
 }
 
 
