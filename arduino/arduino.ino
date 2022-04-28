@@ -68,21 +68,28 @@ unsigned long ddgmax_last_fall_time = 1;
 // Time-keeping
 long iterations = 0;
 
-// Bluetooth
-SoftwareSerial HC05Module(3, 3);
+// Bluetooth and button
+bool pressed = false;
+int button_state = 0;
+const int BUTTON_INPUT = 8;
+const int HC05_TX = 14;
+const int HC05_RX = 15;
+SoftwareSerial HC05Module(HC05_TX, HC05_RX);
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(38400);
   Wire.begin();
   Wire.beginTransmission(MPU_ADDR); // Begins a transmission to the I2C slave (GY-521 board)
   Wire.write(0x6B); // PWR_MGMT_1 register
   Wire.write(0); // set to zero (wakes up the MPU-6050)
   Wire.endTransmission(true);
 
-  // HC05Module.begin(9600);
-
   // LED
   lcd.begin(16, 2);
+
+  // Bluetooth and button
+  pinMode(BUTTON_INPUT, INPUT);
+  HC05Module.begin(38400);
 }
 
 
@@ -149,8 +156,23 @@ void loop() {
   } else {
     lcd.print("Running");
   }
+
+  // Bluetooth and button
+  button_state = digitalRead(BUTTON_INPUT);
+  if (pressed) {
+    if (button_state == LOW) {
+      // Depress
+      pressed = false;
+    }
+  } else {
+    if (button_state == HIGH) {
+      pressed = true;
+      Serial.println(String(bpm));
+      HC05Module.print(String(bpm)); // Do bluetooth communication
+    }
+  }
   
-  // delay
+  // Delay
   iterations++;
   delay(50);
   
