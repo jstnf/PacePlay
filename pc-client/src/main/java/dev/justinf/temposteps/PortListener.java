@@ -30,7 +30,7 @@ public class PortListener {
                 }
 
                 byte[] readBuffer = new byte[port.bytesAvailable()];
-                // int numRead = port.readBytes(readBuffer, readBuffer.length);
+                int numRead = port.readBytes(readBuffer, readBuffer.length);
                 // System.out.println("Read " + numRead + " bytes.");
                 String s = new String(readBuffer);
                 app.queueData(s);
