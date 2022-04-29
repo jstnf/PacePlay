@@ -1,16 +1,36 @@
 package dev.justinf.temposteps;
 
+import javax.swing.*;
+
 public class TempoStepsApp {
 
     private final SerialTerminal arduino;
+    private final InfoFrame window;
+    private Thread connectionThread;
 
     public TempoStepsApp() {
         arduino = new SerialTerminal(this);
+        window = new InfoFrame(this);
     }
 
     public void start() {
-        arduino.setPort("COM15");
-        arduino.establishConnection();
+        Thread updateThread = new Thread(() -> {
+            while (true) {
+                window.update();
+                Thread.yield();
+            }
+        });
+
+        updateThread.start();
+        testConnection();
+
+        JFrame frame = new JFrame("TempoSteps");
+        frame.setContentPane(window.getMainPanel());
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setResizable(false);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
     }
 
     public void log(Object o) {
@@ -22,6 +42,14 @@ public class TempoStepsApp {
             processData(data);
         });
         t.start();
+    }
+
+    public void testConnection() {
+        if (connectionThread != null && connectionThread.isAlive()) connectionThread.interrupt();
+        connectionThread = new Thread(() -> {
+            window.atomicallySetConnectionResult((arduino.establishConnection()));
+        });
+        connectionThread.start();
     }
 
     public void queueSongPlay(float bpm) {
@@ -61,5 +89,9 @@ public class TempoStepsApp {
                     break;
             }
         }
+    }
+
+    public SerialTerminal getArduino() {
+        return arduino;
     }
 }

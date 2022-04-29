@@ -12,8 +12,14 @@ public class SerialTerminal {
     private boolean connected;
     private long lastHandshakeTimestamp;
 
+    private Thread listenThread;
+
     public SerialTerminal(TempoStepsApp app) {
         this.app = app;
+        this.port = "COM1"; // Default value, changed in GUI
+        this.connecting = false;
+        this.connected = false;
+        this.lastHandshakeTimestamp = -1;
     }
 
     public boolean establishConnection() {
@@ -25,7 +31,7 @@ public class SerialTerminal {
         connecting = true;
         currentPort = SerialPort.getCommPort(port);
         currentPort.setComPortParameters(9600, 8, 1, 0);
-        currentPort.setComPortTimeouts(SerialPort.TIMEOUT_WRITE_BLOCKING, 0, 0);
+        currentPort.setComPortTimeouts(SerialPort.TIMEOUT_NONBLOCKING, 0, 0);
         if (!currentPort.openPort()) {
             app.log("Could not open port!");
             connecting = false;
@@ -39,7 +45,9 @@ public class SerialTerminal {
         connecting = false;
         connected = true;
         currentListener = new PortListener(app, currentPort);
-        currentListener.listen();
+
+        listenThread = new Thread(() -> currentListener.listen());
+        listenThread.start();
         return true;
     }
 
@@ -61,5 +69,9 @@ public class SerialTerminal {
 
     public void setPort(String port) {
         this.port = port;
+    }
+
+    public void setLastHandshakeTimestamp(long lastHandshakeTimestamp) {
+        this.lastHandshakeTimestamp = lastHandshakeTimestamp;
     }
 }
