@@ -167,8 +167,13 @@ void loop() {
   } else {
     if (button_state == HIGH) {
       pressed = true;
-      Serial.println(String(bpm));
-      HC05Module.print(String(bpm)); // Do bluetooth communication
+
+      String output = "s";
+      output.concat(bpm);
+      output.concat("e");
+      
+      Serial.println(output);
+      HC05Module.print(output); // Do bluetooth communication
     }
   }
   

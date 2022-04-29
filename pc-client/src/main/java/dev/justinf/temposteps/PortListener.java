@@ -30,15 +30,10 @@ public class PortListener {
                 }
 
                 byte[] readBuffer = new byte[port.bytesAvailable()];
-                int numRead = port.readBytes(readBuffer, readBuffer.length);
+                // int numRead = port.readBytes(readBuffer, readBuffer.length);
                 // System.out.println("Read " + numRead + " bytes.");
-
-                if (readMode) {
-
-                } else {
-                    // Listen for starting character t
-
-                }
+                String s = new String(readBuffer);
+                app.queueData(s);
             }
         } catch (Exception e) { e.printStackTrace(); }
     }

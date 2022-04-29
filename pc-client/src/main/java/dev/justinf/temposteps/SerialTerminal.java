@@ -7,6 +7,7 @@ public class SerialTerminal {
     private final TempoStepsApp app;
     private String port;
     private SerialPort currentPort;
+    private PortListener currentListener;
     private boolean connecting;
     private boolean connected;
     private long lastHandshakeTimestamp;
@@ -37,6 +38,8 @@ public class SerialTerminal {
 
         connecting = false;
         connected = true;
+        currentListener = new PortListener(app, currentPort);
+        currentListener.listen();
         return true;
     }
 
