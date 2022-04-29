@@ -8,18 +8,12 @@ public class PortListener {
 
     private final TempoStepsApp app;
     private final SerialPort port;
-
-    private AtomicBoolean running;
-
-    // Store current string since communications can come with multiple buffers
-    private boolean readMode;
-    private String currentString;
+    private final AtomicBoolean running;
 
     public PortListener(TempoStepsApp app, SerialPort port) {
         this.app = app;
         this.port = port;
         running = new AtomicBoolean(true);
-        readMode = false;
     }
 
     public void listen() {
@@ -34,6 +28,7 @@ public class PortListener {
                 // System.out.println("Read " + numRead + " bytes.");
                 String s = new String(readBuffer);
                 app.queueData(s);
+                app.getArduino().setLastHandshakeTimestamp(System.currentTimeMillis());
             }
         } catch (Exception e) { e.printStackTrace(); }
     }

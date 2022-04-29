@@ -172,7 +172,7 @@ void loop() {
       output.concat(bpm);
       output.concat("e");
       
-      Serial.println(output);
+      //Serial.println(output);
       HC05Module.print(output); // Do bluetooth communication
     }
   }
@@ -280,15 +280,16 @@ void loop() {
   output.concat(avg_ddamax);
   output.concat(",avg_ddgmax:");
   output.concat(avg_ddgmax);
-  output.concat(",aY:");
-  output.concat(accelerometer_y);
   */
+  String output = String("aY:");
+  output.concat(accelerometer_y);
+  
   
   //String output = String("bpm:");
   //output.concat(interval_ms);
   
   // HC05Module.write(output.c_str());
-  // Serial.println(output);
+  Serial.println(output);
   
   // Serial.print("aX = "); Serial.print(convert_int16_to_str(accelerometer_x));
   // Serial.print(" | aY = "); Serial.print(convert_int16_to_str(accelerometer_y));

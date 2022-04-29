@@ -31,7 +31,6 @@ public class InfoFrame {
     private JPanel consolePanel;
     private JTextArea consoleTextArea;
     private JScrollPane consoleScrollPane;
-    private JButton doSomethingButton;
 
     public InfoFrame(TempoStepsApp app) {
         this.app = app;
@@ -39,11 +38,6 @@ public class InfoFrame {
         connectButton.addActionListener(e -> {
             app.getArduino().setPort(serialPortTextField.getText());
             app.testConnection();
-        });
-        doSomethingButton.addActionListener(e -> {
-            byte random = (byte) ((int) (Math.random() * 3));
-            // app.getSerialTerminal().write(random);
-            app.log("Sent " + random + " to " + app.getArduino().getPort() + "!");
         });
 
         // Auto-scroll console text area

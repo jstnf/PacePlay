@@ -4,16 +4,23 @@ import javax.swing.*;
 
 public class TempoStepsApp {
 
+    private static final String LIBRARY_PATH = "./library.tsv";
+
     private final SerialTerminal arduino;
     private final InfoFrame window;
+    private final MusicLibrary musicLibrary;
     private Thread connectionThread;
 
     public TempoStepsApp() {
         arduino = new SerialTerminal(this);
         window = new InfoFrame(this);
+        musicLibrary = new MusicLibrary(this);
+        connectionThread = null;
     }
 
     public void start() {
+        musicLibrary.importSongs(LIBRARY_PATH); // can change
+
         Thread updateThread = new Thread(() -> {
             while (true) {
                 window.update();
@@ -35,6 +42,7 @@ public class TempoStepsApp {
 
     public void log(Object o) {
         System.out.println(o.toString());
+        window.getConsoleTextArea().append("\n" + o.toString());
     }
 
     public void queueData(String data) {
@@ -54,7 +62,8 @@ public class TempoStepsApp {
 
     public void queueSongPlay(float bpm) {
         // We can't make this blocking, or we'll never get out of processData
-        System.out.println(bpm);
+        log("Attempting to play song that matches " + bpm + "BPM!");
+        musicLibrary.play(bpm);
     }
 
     // This should be thread-safe :)
