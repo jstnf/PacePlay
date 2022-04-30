@@ -42,6 +42,7 @@ public class MusicLibrary {
         for (Song s : songs) {
             if (s.diff(bpm) < lowestDiff) {
                 toPlay = s;
+                lowestDiff = s.diff(bpm);
             }
         }
 

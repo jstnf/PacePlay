@@ -15,7 +15,7 @@ public class Song {
     }
 
     public float diff(float bpm) {
-        return Math.abs(bpm - this.bpm);
+        return (float) Math.min(Math.abs(bpm - this.bpm), Math.min(Math.abs(bpm - (this.bpm * 2.0)), Math.abs(bpm - (this.bpm / 2.0))));
     }
 
     public String getTitle() {
